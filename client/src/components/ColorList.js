@@ -30,7 +30,7 @@ const ColorList = ({ colors, updateColors }) => {
     .then(res=>{
       console.log('res in saveEdit',res);
       updateColors(colors.map(col =>{if (col.id === colorToEdit.id){return res.data}else{return col}}))
-      history.push('bubble-page')
+      history.push('/bubble-page')
     })
     .catch(err=>console.log('error in daveedit put', err))
 
@@ -40,6 +40,16 @@ const ColorList = ({ colors, updateColors }) => {
 
   const deleteColor = color => {
     // make a delete request to delete this color
+    console.log('color in deleteColor',color)
+    axiosWithAuth()
+    .delete(`http://localhost:5000/api/colors/:${color.id}`)
+    .then(res=>{
+      console.log('res in deleteColor axios',res)
+        updateColors(colors.filter(delColor => delColor.id !== color.id))
+        history.push('/bubble-page')
+    })
+    .catch(err=>console.log('error in deleteColor axios',err))
+  
   };
 
   return (
