@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { axiosWithAuth } from "../utils/axiosWithAuth";
+import {useHistory} from 'react-router-dom';
 
 const initialColor = {
   color: "",
@@ -7,11 +9,13 @@ const initialColor = {
 };
 
 const ColorList = ({ colors, updateColors }) => {
-  console.log(colors);
+  const history = useHistory()
+  console.log('colors in colorList',colors);
   const [editing, setEditing] = useState(false);
   const [colorToEdit, setColorToEdit] = useState(initialColor);
 
   const editColor = color => {
+    console.log('color in editColor',color)
     setEditing(true);
     setColorToEdit(color);
   };
@@ -21,6 +25,17 @@ const ColorList = ({ colors, updateColors }) => {
     // Make a put request to save your updated color
     // think about where will you get the id from...
     // where is is saved right now?
+    axiosWithAuth()
+    .put(`http://localhost:5000/api/colors/:${colorToEdit.id}`, colorToEdit)
+    .then(res=>{
+      console.log('res in saveEdit',res);
+      updateColors(colors.map(col =>{if (col.id === colorToEdit.id){return res.data}else{return col}}))
+      history.push('bubble-page')
+    })
+    .catch(err=>console.log('error in daveedit put', err))
+
+
+
   };
 
   const deleteColor = color => {
