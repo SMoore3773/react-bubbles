@@ -101,6 +101,7 @@ function authenticator(req, res, next) {
 }
 
 app.post("/api/login", (req, res) => {
+  console.log(req.body)
   const { username, password } = req.body;
   if (username === "Lambda School" && password === "i<3Lambd4") {
     req.loggedIn = true;

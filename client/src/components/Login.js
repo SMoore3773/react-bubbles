@@ -3,10 +3,10 @@ import {axiosWithAuth} from '../utils/axiosWithAuth';
 import {useHistory} from 'react-router-dom';
 
 
-const Login = (props) => {
+const Login = () => {
   const [loginCreds, setLoginCreds] = useState({credentials:{username:'', password:''}})
   const history = useHistory();
-console.log(history)
+// console.log(history)
 
   const handleChanges = e =>{
     setLoginCreds({
@@ -15,17 +15,18 @@ console.log(history)
       }
     })
   };
-console.log(loginCreds)
+console.log('logincreds outside of post',loginCreds)
   const login = e =>{
     e.preventDefault();
     axiosWithAuth()
-    .post('http://localhost:5000/api.login',loginCreds)
+    .post('http://localhost:5000/api/login',loginCreds.credentials)
     .then(res=>{
       console.log('login success in login.js axios post', res)
       localStorage.setItem('token', res.data.payload);
       history.push('/bubble-page')
     })
-    .catch(err => console.log('error in login : ',err))
+    .catch(err => console.log('error in login : ',err)
+    )
   }
 
   // make a post request to retrieve a token from the api
@@ -33,7 +34,11 @@ console.log(loginCreds)
   return (
     <>
       <h1>Welcome to the Bubble App!</h1>
-      <p>Build a login page here</p>
+      <div>Build a login page here</div>
+      <div>
+        <p>Lambda School</p>
+        <p>{'i<3Lambd4'}</p>
+      </div>
       <form className='loginForm' onSubmit={login}>
                     <input
                     type='text'
