@@ -5,7 +5,8 @@ import {useHistory} from 'react-router-dom';
 
 const initialColor = {
   color: "",
-  code: { hex: "" }
+  code: { hex: "" },
+  id:''
 };
 
 const ColorList = ({ colors, updateColors }) => {
@@ -30,12 +31,10 @@ const ColorList = ({ colors, updateColors }) => {
     .then(res=>{
       console.log('res in saveEdit',res);
       updateColors(colors.map(col =>{if (col.id === colorToEdit.id){return res.data}else{return col}}))
+      setEditing(false);
       history.push('/bubble-page')
     })
     .catch(err=>console.log('error in daveedit put', err))
-
-
-
   };
 
   const deleteColor = color => {
@@ -49,9 +48,23 @@ const ColorList = ({ colors, updateColors }) => {
         history.push('/bubble-page')
     })
     .catch(err=>console.log('error in deleteColor axios',err))
-  
   };
 
+  const addColor = e =>{
+    e.preventDefault();
+    const color = {...colorToEdit, id: Date.now()}
+    console.log('color in addcolor',color)
+    axiosWithAuth()
+    .post(`http://localhost:5000/api/colors`, color)
+    .then(res => {
+    console.log('res in addColor', res)
+    history.push('/bubble-page')})
+    .catch(err=>console.log('error in addColor',err))
+    
+  }
+// const handleChanges = e=>{
+//   setColorToEdit({...colorToEdit,id:Date.now(), [e.target.name]:e.target.value})
+// }
   return (
     <div className="colors-wrap">
       <p>colors</p>
@@ -107,6 +120,27 @@ const ColorList = ({ colors, updateColors }) => {
       )}
       <div className="spacer" />
       {/* stretch - build another form here to add a color */}
+      <form>
+        <input
+        type='text'
+        name='color'
+        placeholder='Color'
+        onChange={e =>
+          setColorToEdit({ ...colorToEdit, color: e.target.value })
+        }
+        />
+        <input
+        type='text'
+        name='hex'
+        placeholder='Color Hex'
+        onChange={e =>
+          setColorToEdit({
+            ...colorToEdit,
+            code: { hex: e.target.value }
+          })}/>
+          <button onClick={addColor}>new</button>
+      </form>
+      {/* <button onClick={addColor}>Add New Color</button> */}
     </div>
   );
 };
